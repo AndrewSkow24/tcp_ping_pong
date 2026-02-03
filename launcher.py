@@ -1,10 +1,10 @@
 """
 Лаунчер для запуска сервера и клиентов в отдельных процессах.
 """
+
 import subprocess
 import sys
 import time
-import signal
 import os
 from typing import List
 
@@ -31,11 +31,16 @@ def start_server(timeout: int = 300) -> subprocess.Popen:
         Объект процесса сервера
     """
     cmd = [
-        sys.executable, SERVER_SCRIPT,
-        "--host", "127.0.0.1",
-        "--port", "8888",
-        "--log", "logs/server.log",
-        "--timeout", str(timeout)
+        sys.executable,
+        SERVER_SCRIPT,
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8888",
+        "--log",
+        "logs/server.log",
+        "--timeout",
+        str(timeout),
     ]
 
     print("Запуск сервера...")
@@ -49,7 +54,7 @@ def start_server(timeout: int = 300) -> subprocess.Popen:
         stderr=subprocess.STDOUT,
         text=True,
         bufsize=1,
-        universal_newlines=True
+        universal_newlines=True,
     )
 
     # Даём серверу время на запуск
@@ -80,12 +85,18 @@ def start_client(client_id: int, timeout: int = 300) -> subprocess.Popen:
     log_file = f"logs/client_{client_id}.log"
 
     cmd = [
-        sys.executable, CLIENT_SCRIPT,
-        "--id", str(client_id),
-        "--host", "127.0.0.1",
-        "--port", "8888",
-        "--log", log_file,
-        "--timeout", str(timeout)
+        sys.executable,
+        CLIENT_SCRIPT,
+        "--id",
+        str(client_id),
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8888",
+        "--log",
+        log_file,
+        "--timeout",
+        str(timeout),
     ]
 
     print(f"Запуск клиента #{client_id}...")
@@ -98,7 +109,7 @@ def start_client(client_id: int, timeout: int = 300) -> subprocess.Popen:
         stderr=subprocess.STDOUT,
         text=True,
         bufsize=1,
-        universal_newlines=True
+        universal_newlines=True,
     )
 
     # Даём клиенту время на подключение
@@ -182,13 +193,19 @@ def main():
     """Основная функция запуска."""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Лаунчер для TCP PING-PONG')
-    parser.add_argument('--timeout', type=int, default=300,
-                        help='Время работы в секундах (по умолчанию 300 = 5 минут)')
-    parser.add_argument('--clients', type=int, default=2,
-                        help='Количество клиентов (по умолчанию 2)')
-    parser.add_argument('--debug', action='store_true',
-                        help='Включить отладочный вывод')
+    parser = argparse.ArgumentParser(description="Лаунчер для TCP PING-PONG")
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=300,
+        help="Время работы в секундах (по умолчанию 300 = 5 минут)",
+    )
+    parser.add_argument(
+        "--clients", type=int, default=2, help="Количество клиентов (по умолчанию 2)"
+    )
+    parser.add_argument(
+        "--debug", action="store_true", help="Включить отладочный вывод"
+    )
 
     args = parser.parse_args()
 
@@ -211,11 +228,18 @@ def main():
 
     try:
         # Запускаем сервер
-        server_cmd = [sys.executable, SERVER_SCRIPT,
-                      "--host", "127.0.0.1",
-                      "--port", "8888",
-                      "--log", "logs/server.log",
-                      "--timeout", str(args.timeout)] + common_args
+        server_cmd = [
+            sys.executable,
+            SERVER_SCRIPT,
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "8888",
+            "--log",
+            "logs/server.log",
+            "--timeout",
+            str(args.timeout),
+        ] + common_args
 
         print(f"\nЗапуск сервера: {' '.join(server_cmd)}")
         server_process = subprocess.Popen(
@@ -224,7 +248,7 @@ def main():
             stderr=subprocess.STDOUT,
             text=True,
             bufsize=1,
-            universal_newlines=True
+            universal_newlines=True,
         )
         processes.append(("server", server_process))
 
@@ -242,12 +266,20 @@ def main():
 
         # Запускаем клиентов
         for client_id in range(1, args.clients + 1):
-            client_cmd = [sys.executable, CLIENT_SCRIPT,
-                          "--id", str(client_id),
-                          "--host", "127.0.0.1",
-                          "--port", "8888",
-                          "--log", f"logs/client_{client_id}.log",
-                          "--timeout", str(args.timeout)] + common_args
+            client_cmd = [
+                sys.executable,
+                CLIENT_SCRIPT,
+                "--id",
+                str(client_id),
+                "--host",
+                "127.0.0.1",
+                "--port",
+                "8888",
+                "--log",
+                f"logs/client_{client_id}.log",
+                "--timeout",
+                str(args.timeout),
+            ] + common_args
 
             print(f"\nЗапуск клиента #{client_id}: {' '.join(client_cmd)}")
             client_process = subprocess.Popen(
@@ -256,7 +288,7 @@ def main():
                 stderr=subprocess.STDOUT,
                 text=True,
                 bufsize=1,
-                universal_newlines=True
+                universal_newlines=True,
             )
             processes.append((f"client_{client_id}", client_process))
 
@@ -317,5 +349,5 @@ def main():
         print("\nЗавершение работы лаунчера")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
